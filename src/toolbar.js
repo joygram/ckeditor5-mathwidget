@@ -1,7 +1,3 @@
-/**
- * @module mathwidget/mathtoolbar
- */
-
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 
@@ -10,23 +6,14 @@ import { g_plugin_name, g_model_name, g_css_name } from './utils';
 var plugin
 
 export default class Toolbar extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
 	static get requires() {
 		return [WidgetToolbarRepository];
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	static get pluginName() {
 		return `${g_plugin_name}Toolbar`;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	afterInit() {
 		const editor = this.editor;
 		const t = editor.t;

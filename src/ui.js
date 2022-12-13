@@ -83,7 +83,7 @@ export default class UI extends Plugin {
 
 		editor.ui.componentFactory.add(`Info${g_plugin_name}`, locale => {
 			const buttonView = new ButtonView(locale);
-			const link = 'https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-math/';
+			const link = 'https://github.com/joygram/ckeditor5-mathwidget';
 
 			buttonView.set({
 				label: t('Read more about Math diagram syntax'),

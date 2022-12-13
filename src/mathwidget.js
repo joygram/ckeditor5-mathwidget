@@ -14,6 +14,6 @@ export default class MathWidget extends Plugin {
 	}
 
 	static get pluginName() {
-		return `${g_plugin_name}`;//'MathWidget';
+		return `${g_plugin_name}`;
 	}
 }

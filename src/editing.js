@@ -5,8 +5,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { toWidget } from 'ckeditor5/src/widget';
 
-//import mermaid from 'mermaid/dist/mermaid';
-
 import { debounce } from 'lodash-es';
 
 import PreviewCommand from './commands/PreviewCommand';
@@ -25,7 +23,7 @@ const DEBOUNCE_TIME = 300;
 
 export default class Editing extends Plugin {
 	static get pluginName() {
-		return `${g_plugin_name}Editing`;//'MathWidgetEditing';
+		return `${g_plugin_name}Editing`;
 	}
 
 
