@@ -1,19 +1,17 @@
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
-/**
- * Helper function for setting the `isOn` state of buttons.
- *
- * @private
- * @param {module:core/editor/editor~Editor} editor
- * @param {String} commandName Short name of the command.
- * @returns {Boolean}
- */
-export function checkIsOn(editor, commandName) {
-	const selection = editor.model.document.selection;
-	const mathItem = selection.getSelectedElement() || selection.getLastPosition().parent;
 
-	if (mathItem && mathItem.is('element', 'math') && mathItem.getAttribute('displayMode') === commandName) {
+export const g_model_name = 'mathwidget';
+export const g_plugin_name = 'MathWidget';
+export const g_css_name = 'ck-mathwidget';
+
+
+export function checkIsOn(in_editor, in_command_name) {
+	const selection = in_editor.model.document.selection;
+	const item = selection.getSelectedElement() || selection.getLastPosition().parent;
+
+	if (item && item.is('element', g_model_name) && item.getAttribute('displayMode') === in_command_name) {
 		return true;
 	}
 
@@ -96,12 +94,8 @@ function renderMathJax3(equation, element, in_callback) {
 }
 
 function renderMathJax2(equation, element) {
-	// if (display) {
-	// 	element.innerHTML = '\\[' + equation + '\\]';
-	// } else {
-	// 	element.innerHTML = '\\(' + equation + '\\)';
-	// }
-	// eslint-disable-next-line
+	element.innerHTML = '$$\n' + equation + '\n$$';
+
 	MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
 }
 

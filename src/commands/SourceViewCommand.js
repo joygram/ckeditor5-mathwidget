@@ -1,19 +1,9 @@
-/**
- * @module math/mathsplitviewcommand
- */
-
 import { Command } from 'ckeditor5/src/core';
 
 import { checkIsOn } from '../utils';
+import { g_plugin_name, g_model_name, g_css_name } from '../utils';
 
-/**
- * The math split view command.
- *
- * Allows to switch to a split view mode.
- *
- * @extends module:core/command~Command
- */
-export default class MathSplitViewCommand extends Command {
+export default class SourceViewCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -21,15 +11,15 @@ export default class MathSplitViewCommand extends Command {
 		const editor = this.editor;
 		const documentSelection = editor.model.document.selection;
 		const selectedElement = documentSelection.getSelectedElement();
-		const isSelectedElementMath = selectedElement && selectedElement.name === 'math';
+		const isSelectedElement = selectedElement && selectedElement.name === g_model_name;
 
-		if (isSelectedElementMath || documentSelection.getLastPosition().findAncestor('math')) {
+		if (isSelectedElement || documentSelection.getLastPosition().findAncestor(g_model_name)) {
 			this.isEnabled = !!selectedElement;
 		} else {
 			this.isEnabled = false;
 		}
 
-		this.value = checkIsOn(editor, 'split');
+		this.value = checkIsOn(editor, 'source');
 	}
 
 	/**
@@ -42,8 +32,8 @@ export default class MathSplitViewCommand extends Command {
 		const mathItem = documentSelection.getSelectedElement() || documentSelection.getLastPosition().parent;
 
 		model.change(writer => {
-			if (mathItem.getAttribute('displayMode') !== 'split') {
-				writer.setAttribute('displayMode', 'split', mathItem);
+			if (mathItem.getAttribute('displayMode') !== 'source') {
+				writer.setAttribute('displayMode', 'source', mathItem);
 			}
 		});
 	}

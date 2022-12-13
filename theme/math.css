@@ -1,5 +1,5 @@
 /* mathwidget wrapper by joygram 2022/12/06 */
-.ck-math__wrapper {
+.ck-mathwidget__wrapper {
 	display: flex;
 	justify-content: center;
 }
@@ -7,7 +7,7 @@
 /* Editing
  Assigned to textarea
  */
-.ck-math__wrapper .ck-math__editing-view {
+.ck-mathwidget__wrapper .ck-mathwidget__editing-view {
 	padding: 16px;
 	/* just like pre element */
 	background-color: hsla(0, 0%, 78%, 0.3);
@@ -20,7 +20,7 @@
 }
 
 /* Preview */
-.ck-math__preview {
+.ck-mathwidget__preview {
 	padding: 16px;
 	background-color: hsla(43, 85%, 49%, 0.227);
 	min-height: 200px;
@@ -45,28 +45,28 @@
 }
 
 /* Source mode */
-.ck-math__source-mode .ck-math__editing-view {
+.ck-mathwidget__source-mode .ck-mathwidget__editing-view {
 	width: 100%;
 }
 
-.ck-math__source-mode .ck-math__preview {
+.ck-mathwidget__source-mode .ck-mathwidget__preview {
 	display: none;
 }
 
 /* Split mode */
-.ck-math__split-mode .ck-math__editing-view {
+.ck-mathwidget__split-mode .ck-mathwidget__editing-view {
 	width: 50%;
 }
 
-.ck-math__split-mode .ck-math__preview {
+.ck-mathwidget__split-mode .ck-mathwidget__preview {
 	width: 50%;
 }
 
 /* Preview mode */
-.ck-math__preview-mode .ck-math__editing-view {
+.ck-mathwidget__preview-mode .ck-mathwidget__editing-view {
 	display: none;
 }
 
-.ck-math__preview-mode .ck-math__preview {
+.ck-mathwidget__preview-mode .ck-mathwidget__preview {
 	width: 100%;
 }

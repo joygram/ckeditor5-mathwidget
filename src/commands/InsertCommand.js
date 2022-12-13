@@ -1,19 +1,10 @@
-/**
- * @module math/insertmathcommand
- */
-
 import { Command } from 'ckeditor5/src/core';
+import { g_plugin_name, g_model_name, g_css_name } from '../utils';
 
-const MOCK_Math_CODE = '\\[ x=\\frac{-b \\pm \\sqrt{b^2 -4ac}}{2a} \\] \\[ E = mc^2 \\]';
 
-/**
- * The insert math command.
- *
- * Allows to insert math.
- *
- * @extends module:core/command~Command
- */
-export default class InsertMathCommand extends Command {
+const MOCK_Math_CODE = 'x=\\frac{-b \\pm \\sqrt{b^2 -4ac}}{2a} \\\\  E = mc^2 ';
+
+export default class InsertCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -21,7 +12,7 @@ export default class InsertMathCommand extends Command {
 		const documentSelection = this.editor.model.document.selection;
 		const selectedElement = documentSelection.getSelectedElement();
 
-		if (selectedElement && selectedElement.name === 'math') {
+		if (selectedElement && selectedElement.name === g_model_name) {
 			this.isEnabled = false;
 		} else {
 			this.isEnabled = true;
@@ -35,17 +26,17 @@ export default class InsertMathCommand extends Command {
 	execute() {
 		const editor = this.editor;
 		const model = editor.model;
-		let mathItem;
+		let item;
 
 		model.change(writer => {
-			mathItem = writer.createElement('math', {
+			item = writer.createElement(g_model_name, {
 				displayMode: 'split',
 				source: MOCK_Math_CODE
 			});
 
-			model.insertContent(mathItem);
+			model.insertContent(item);
 		});
 
-		return mathItem;
+		return item;
 	}
 }

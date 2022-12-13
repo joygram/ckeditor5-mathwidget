@@ -1,5 +1,5 @@
 /**
- * @module math/mathediting
+ * @module mathwidget/mathediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -9,101 +9,79 @@ import { toWidget } from 'ckeditor5/src/widget';
 
 import { debounce } from 'lodash-es';
 
-import MathPreviewCommand from './commands/MathPreviewCommand';
-import MathSourceViewCommand from './commands/MathSourceViewCommand';
-import MathSplitViewCommand from './commands/MathSplitViewCommand';
-import InsertMathCommand from './commands/insertMathCommand';
+import PreviewCommand from './commands/PreviewCommand';
+import SourceViewCommand from './commands/SourceViewCommand';
+import SplitViewCommand from './commands/SplitViewCommand';
+import InsertCommand from './commands/InsertCommand';
 
 import { render } from './utils';
+import { g_plugin_name, g_model_name, g_css_name } from './utils';
+
 
 // Time in milliseconds.
 const DEBOUNCE_TIME = 300;
 
 /* global window */
 
-export default class MathEditing extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
+export default class Editing extends Plugin {
 	static get pluginName() {
-		return 'MathEditing';
+		return `${g_plugin_name}Editing`;//'MathWidgetEditing';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+
 	init() {
 		this._registerCommands();
 		this._defineConverters();
 
-		this.editor.config.define('math', {
+		this.editor.config.define(g_model_name, {
 			engine: 'mathjax',
 			outputType: 'script',
-			forceOutputType: false,
-			enablePreview: true,
-			previewClassName: [],
-			popupClassName: [],
 			katexRenderOptions: {}
 		});
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+
 	afterInit() {
 		//define schema
-		this.editor.model.schema.register('math', {
+		this.editor.model.schema.register(g_model_name, {
 			allowAttributes: ['displayMode', 'source'],
 			allowWhere: '$block',
 			isObject: true
 		});
 	}
 
-	/**
-	 * @inheritDoc
-	*/
+
 	_registerCommands() {
 		const editor = this.editor;
 
-		editor.commands.add('mathPreviewCommand', new MathPreviewCommand(editor));
-		editor.commands.add('mathSplitViewCommand', new MathSplitViewCommand(editor));
-		editor.commands.add('mathSourceViewCommand', new MathSourceViewCommand(editor));
-		editor.commands.add('insertMathCommand', new InsertMathCommand(editor));
+		editor.commands.add(`Preview${g_plugin_name}Command`, new PreviewCommand(editor));
+		editor.commands.add(`SplitView${g_plugin_name}Command`, new SplitViewCommand(editor));
+		editor.commands.add(`SourceView${g_plugin_name}Command`, new SourceViewCommand(editor));
+		editor.commands.add(`Insert${g_plugin_name}Command`, new InsertCommand(editor));
 	}
 
-	/**
-	 * Adds converters.
-	 *
-	 * @private
-	 */
 	_defineConverters() {
 		const editor = this.editor;
 
-		editor.data.downcastDispatcher.on('insert:math', this._mathDataDowncast.bind(this));
-		editor.editing.downcastDispatcher.on('insert:math', this._mathDowncast.bind(this));
-		editor.editing.downcastDispatcher.on('attribute:source:math', this._sourceAttributeDowncast.bind(this));
+		editor.data.downcastDispatcher.on(`insert:${g_model_name}`, this._mathDataDowncast.bind(this));
+		editor.editing.downcastDispatcher.on(`insert:${g_model_name}`, this._mathDowncast.bind(this));
+		editor.editing.downcastDispatcher.on(`attribute:source:${g_model_name}`, this._sourceAttributeDowncast.bind(this));
 
-		editor.data.upcastDispatcher.on('element:code', this._mathUpcast.bind(this), { priority: 'high' });
+		editor.data.upcastDispatcher.on(`element:code`, this._mathUpcast.bind(this), { priority: 'high' });
 
 		editor.conversion.for('editingDowncast').attributeToAttribute({
 			model: {
-				name: 'math',
+				name: `${g_model_name}`,
 				key: 'displayMode'
 			},
 			view: modelAttributeValue => ({
 				key: 'class',
-				value: 'ck-math__' + modelAttributeValue + '-mode'
+				value: `${g_css_name}__` + modelAttributeValue + '-mode'
 			})
 		});
 	}
 
-	/**
-	 *
-	 * @private
-	 * @param {*} evt
-	 * @param {*} data
-	 * @param {*} conversionApi
-	 */
+
 	_mathDataDowncast(evt, data, conversionApi) {
 		const model = this.editor.model;
 		const { writer, mapper } = conversionApi;
@@ -116,7 +94,7 @@ export default class MathEditing extends Plugin {
 		// For downcast we're using only language-math class. We don't set class to `math language-math` as
 		// multiple markdown converters that we have seen are using only `language-math` class and not `math` alone.
 		const code = writer.createContainerElement('code', {
-			class: 'language-math'
+			class: `language-${g_model_name}`
 		});
 		const pre = writer.createContainerElement('pre', {
 			spellcheck: 'false'
@@ -129,13 +107,7 @@ export default class MathEditing extends Plugin {
 		mapper.bindElements(data.item, code);
 	}
 
-	/**
-	 *
-	 * @private
-	 * @param {*} evt
-	 * @param {*} data
-	 * @param {*} conversionApi
-	 */
+
 	_mathDowncast(evt, data, conversionApi) {
 		const { writer, mapper, consumable } = conversionApi;
 		const { editor } = this;
@@ -149,17 +121,17 @@ export default class MathEditing extends Plugin {
 		const targetViewPosition = mapper.toViewPosition(model.createPositionBefore(data.item));
 
 		const wrapperAttributes = {
-			class: ['ck-math__wrapper']
+			class: [`${g_css_name}__wrapper`]
 		};
 		const textareaAttributes = {
-			class: ['ck-math__editing-view'],
-			placeholder: t('Insert math source code'),
+			class: [`${g_css_name}__editing-view`],
+			placeholder: t(`Insert Code`),
 			'data-cke-ignore-events': true
 		};
 
 		const wrapper = writer.createContainerElement('div', wrapperAttributes);
 		const editingContainer = writer.createUIElement('textarea', textareaAttributes, createEditingTextarea);
-		const previewContainer = writer.createUIElement('div', { class: ['ck-math__preview'] }, createMathPreview);
+		const previewContainer = writer.createUIElement('div', { class: [`${g_css_name}__preview`] }, createMathPreview);
 
 		writer.insert(writer.createPositionAt(wrapper, 'start'), previewContainer);
 		writer.insert(writer.createPositionAt(wrapper, 'start'), editingContainer);
@@ -169,7 +141,7 @@ export default class MathEditing extends Plugin {
 		mapper.bindElements(data.item, wrapper);
 
 		return toWidget(wrapper, writer, {
-			widgetLabel: t('Math widget'),
+			widgetLabel: t(`${g_plugin_name}`),
 			hasSelectionHandle: true
 		});
 
@@ -202,15 +174,15 @@ export default class MathEditing extends Plugin {
 
 		function createMathPreview(domDocument) {
 			// Taking the text from the wrapper container element for now
-			const mathSource = data.item.getAttribute('source');
+			const source = data.item.getAttribute('source');
 			const domElement = this.toDomElement(domDocument);
-			const mathConfig = editor.config.get('math');
+			const config = editor.config.get(`${g_model_name}`);
 
-			domElement.innerHTML = mathSource;
+			domElement.innerHTML = source;
 
 			window.setTimeout(() => {
 				// @todo: by the looks of it the domElement needs to be hooked to tree in order to allow for rendering.
-				that._renderMath(mathSource, mathConfig, domElement);
+				that._renderMath(source, config, domElement);
 			}, 100);
 
 			return domElement;
@@ -226,44 +198,38 @@ export default class MathEditing extends Plugin {
 	 */
 	_sourceAttributeDowncast(evt, data, conversionApi) {
 		// @todo: test whether the attribute was consumed.
-		const newSource = data.attributeNewValue;
+		const new_source = data.attributeNewValue;
 		const domConverter = this.editor.editing.view.domConverter;
 
-		if (newSource) {
-			const mathView = conversionApi.mapper.toViewElement(data.item);
-			const mathConfig = this.editor.config.get('math');
+		if (new_source) {
+			const data_view = conversionApi.mapper.toViewElement(data.item);
+			const config = this.editor.config.get(`${g_model_name}`);
 
 
-			for (const child of mathView.getChildren()) {
-				if (child.name === 'textarea' && child.hasClass('ck-math__editing-view')) {
+			for (const child of data_view.getChildren()) {
+				if (child.name === 'textarea' && child.hasClass(`${g_css_name}__editing-view`)) {
 					const domEditingTextarea = domConverter.viewToDom(child, window.document);
 
-					if (domEditingTextarea.value != newSource) {
-						domEditingTextarea.value = newSource;
+					if (domEditingTextarea.value != new_source) {
+						domEditingTextarea.value = new_source;
 					}
-				} else if (child.name === 'div' && child.hasClass('ck-math__preview')) {
+				} else if (child.name === 'div' && child.hasClass(`${g_css_name}__preview`)) {
 					// @todo: we could optimize this and not refresh math if widget is in source mode.
 					const domPreviewWrapper = domConverter.viewToDom(child, window.document);
 
 					if (domPreviewWrapper) {
-						domPreviewWrapper.innerHTML = newSource;
+						domPreviewWrapper.innerHTML = new_source;
 						// 세팅하는 부분이 있는지 체크
 						domPreviewWrapper.removeAttribute('data-processed');
 
-						this._renderMath(newSource, mathConfig, domPreviewWrapper);
+						this._renderMath(new_source, config, domPreviewWrapper);
 					}
 				}
 			}
 		}
 	}
 
-	/**
-	 *
-	 * @private
-	 * @param {*} evt
-	 * @param {*} data
-	 * @param {*} conversionApi
-	 */
+
 	_mathUpcast(evt, data, conversionApi) {
 		const viewCodeElement = data.viewItem;
 		const hasPreElementParent = !viewCodeElement.parent || !viewCodeElement.parent.is('element', 'pre');
@@ -271,31 +237,31 @@ export default class MathEditing extends Plugin {
 		const { consumable, writer } = conversionApi;
 
 		//언어 단위로 찾을 수 있어야 한다 language-{r} language-{python} ...
-		if (!viewCodeElement.hasClass('language-math') || hasPreElementParent || hasCodeAncestors) {
+		if (!viewCodeElement.hasClass(`language-${g_model_name}`) || hasPreElementParent || hasCodeAncestors) {
 			return;
 		}
 
 		if (!consumable.test(viewCodeElement, { name: true })) {
 			return;
 		}
-		const mathSource = Array.from(viewCodeElement.getChildren())
+		const source = Array.from(viewCodeElement.getChildren())
 			.filter(item => item.is('$text'))
 			.map(item => item.data)
 			.join('');
 
-		const mathElement = writer.createElement('math', {
-			source: mathSource,
+		const model_elem = writer.createElement(g_model_name, {
+			source: source,
 			displayMode: 'split'
 		});
 
 		// Let's try to insert math element.
-		if (!conversionApi.safeInsert(mathElement, data.modelCursor)) {
+		if (!conversionApi.safeInsert(model_elem, data.modelCursor)) {
 			return;
 		}
 
 		consumable.consume(viewCodeElement, { name: true });
 
-		conversionApi.updateConversionResult(mathElement, data);
+		conversionApi.updateConversionResult(model_elem, data);
 	}
 
 	/**
@@ -304,8 +270,8 @@ export default class MathEditing extends Plugin {
 	 *
 	 * @param {HTMLElement} domElement
 	 */
-	_renderMath(source, mathConfig, domElement) {
+	_renderMath(in_source, in_config, domElement) {
 		//display : div or span
-		render(source, mathConfig, domElement);
+		render(in_source, in_config, domElement);
 	}
 }

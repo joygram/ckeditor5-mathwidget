@@ -1,11 +1,15 @@
 /**
- * @module math/mathtoolbar
+ * @module mathwidget/mathtoolbar
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 
-export default class MathToolbar extends Plugin {
+import { g_plugin_name, g_model_name, g_css_name } from './utils';
+
+var plugin
+
+export default class Toolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -17,7 +21,7 @@ export default class MathToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'MathToolbar';
+		return `${g_plugin_name}Toolbar`;
 	}
 
 	/**
@@ -28,12 +32,12 @@ export default class MathToolbar extends Plugin {
 		const t = editor.t;
 
 		const widgetToolbarRepository = editor.plugins.get(WidgetToolbarRepository);
-		const mathToolbarItems = ['mathSourceView', 'mathSplitView', 'mathPreview', '|', 'mathInfo']; //_registerCommands, _addMathInfoButton
+		const toolbar_items = [`SourceView${g_plugin_name}`, `SplitView${g_plugin_name}`, `Preview${g_plugin_name}`, '|', `Info${g_plugin_name}`]; //_registerCommands, _addMathInfoButton
 
-		if (mathToolbarItems) {
-			widgetToolbarRepository.register('mathToolbar', {
-				ariaLabel: t('Math toolbar'),
-				items: mathToolbarItems,
+		if (toolbar_items) {
+			widgetToolbarRepository.register(`${g_plugin_name}Toolbar`, {
+				ariaLabel: t(`${g_plugin_name} Toolbar`),
+				items: toolbar_items,
 				getRelatedElement: selection => getSelectedElement(selection)
 			});
 		}
@@ -43,7 +47,7 @@ export default class MathToolbar extends Plugin {
 function getSelectedElement(selection) {
 	const viewElement = selection.getSelectedElement();
 
-	if (viewElement && viewElement.hasClass('ck-math__wrapper')) {
+	if (viewElement && viewElement.hasClass(`${g_css_name}__wrapper`)) {
 		return viewElement;
 	}
 

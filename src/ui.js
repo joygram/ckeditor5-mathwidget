@@ -1,46 +1,36 @@
 /**
- * @module math/mathui
+ * @module mathwidget/mathui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import insertMathIcon from '../theme/icons/math.svg';
+import insertIcon from '../theme/icons/math.svg';
 import previewModeIcon from '../theme/icons/preview-mode.svg';
 import splitModeIcon from '../theme/icons/split-mode.svg';
 import sourceModeIcon from '../theme/icons/source-mode.svg';
 import infoIcon from '../theme/icons/info.svg';
 
+import { g_plugin_name, g_model_name, g_css_name } from './utils';
 /* global window, document */
 
-export default class MathUI extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
+export default class UI extends Plugin {
 	static get pluginName() {
-		return 'MathUI';
+		return `${g_plugin_name}UI`;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		this._addButtons();
 	}
 
-	/**
-	 * Adds all math-related buttons.
-	 *
-	 * @private
-	 */
 	_addButtons() {
 		const editor = this.editor;
 
-		this._addInsertMathButton();
-		this._addMathInfoButton();
-		this._createToolbarButton(editor, 'mathPreview', 'Preview', previewModeIcon);
-		this._createToolbarButton(editor, 'mathSourceView', 'Source view', sourceModeIcon);
-		this._createToolbarButton(editor, 'mathSplitView', 'Split view', splitModeIcon);
+		this._addInsertButton();
+		this._addInfoButton();
+		this._createToolbarButton(editor, `Preview${g_plugin_name}`, 'Preview', previewModeIcon);
+		this._createToolbarButton(editor, `SourceView${g_plugin_name}`, 'Source view', sourceModeIcon);
+		this._createToolbarButton(editor, `SplitView${g_plugin_name}`, 'Split view', splitModeIcon);
 	}
 
 	/**
@@ -48,18 +38,19 @@ export default class MathUI extends Plugin {
 	 *
 	 * @private
 	 */
-	_addInsertMathButton() {
+	_addInsertButton() {
 		const editor = this.editor;
 		const t = editor.t;
 		const view = editor.editing.view;
+		const cmd_name = `Insert${g_plugin_name}Command`;
 
-		editor.ui.componentFactory.add('math', locale => {
+		editor.ui.componentFactory.add(`${g_model_name}`, locale => {
 			const buttonView = new ButtonView(locale);
-			const command = editor.commands.get('insertMathCommand'); //from _registerCommands
+			const command = editor.commands.get(cmd_name); //from _registerCommands
 
 			buttonView.set({
-				label: t('Math'),
-				icon: insertMathIcon,
+				label: t(g_plugin_name),
+				icon: insertIcon,
 				tooltip: true
 			});
 
@@ -67,17 +58,17 @@ export default class MathUI extends Plugin {
 
 			// Execute the command when the button is clicked.
 			command.listenTo(buttonView, 'execute', () => {
-				const mathItem = editor.execute('insertMathCommand');
-				const mathItemViewElement = editor.editing.mapper.toViewElement(mathItem);
+				const item = editor.execute(cmd_name);
+				const view_element = editor.editing.mapper.toViewElement(item);
 
 				view.scrollToTheSelection();
 				view.focus();
 
-				if (mathItemViewElement) {
-					const mathItemDomElement = view.domConverter.viewToDom(mathItemViewElement, document);
+				if (view_element) {
+					const item_dom_element = view.domConverter.viewToDom(view_element, document);
 
-					if (mathItemDomElement) {
-						mathItemDomElement.querySelector('.ck-math__editing-view').focus();
+					if (item_dom_element) {
+						item_dom_element.querySelector(`.${g_css_name}__editing-view`).focus();
 					}
 				}
 			});
@@ -86,16 +77,11 @@ export default class MathUI extends Plugin {
 		});
 	}
 
-	/**
-	 * Adds the button linking to the math guide.
-	 *
-	 * @private
-	 */
-	_addMathInfoButton() {
+	_addInfoButton() {
 		const editor = this.editor;
 		const t = editor.t;
 
-		editor.ui.componentFactory.add('mathInfo', locale => {
+		editor.ui.componentFactory.add(`Info${g_plugin_name}`, locale => {
 			const buttonView = new ButtonView(locale);
 			const link = 'https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-math/';
 
@@ -113,21 +99,13 @@ export default class MathUI extends Plugin {
 		});
 	}
 
-	/**
-	 * Adds the math balloon toolbar button.
-	 *
-	 * @private
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {String} name Name of the button.
-	 * @param {String} label Label for the button.
-	 * @param {String} icon The button icon.
-	 */
-	_createToolbarButton(editor, name, label, icon) {
+
+	_createToolbarButton(editor, in_name, label, icon) {
 		const t = editor.t;
 
-		editor.ui.componentFactory.add(name, locale => {
+		editor.ui.componentFactory.add(in_name, locale => {
 			const buttonView = new ButtonView(locale);
-			const command = editor.commands.get(`${name}Command`);
+			const command = editor.commands.get(`${in_name}Command`);
 
 			buttonView.set({
 				label: t(label),
@@ -139,7 +117,7 @@ export default class MathUI extends Plugin {
 
 			// Execute the command when the button is clicked.
 			command.listenTo(buttonView, 'execute', () => {
-				editor.execute(`${name}Command`);
+				editor.execute(`${in_name}Command`);
 				editor.editing.view.scrollToTheSelection();
 				editor.editing.view.focus();
 			});
