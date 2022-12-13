@@ -6,13 +6,22 @@ derived form
 
 [ckeditor5-math](https://github.com/isaul32/ckeditor5-math.git) && [ckeditor5-mermaid](https://github.com/ckeditor/ckeditor5-mermaid.git) plugin
 
+## Feature
+
+- Preview / Source View
+- multiple equation support  
+
+![image-20221213182118441](assets/image-20221213182118441.png)
+
+
+
 ## Requirements
 
 -   Use same major version as your CKEditor 5 build
 
 
 ```js
-import MathWidget from 'ckeditor5-mathwidget/src/math';
+import MathWidget from 'ckeditor5-mathwidget/src/mathwidget';
 ```
 
 Add it to built-in plugins
