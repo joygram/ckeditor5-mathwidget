@@ -44,7 +44,7 @@ InlineEditor.defaultConfig = {
 ```js
 InlineEditor.defaultConfig = {
 	// ...
-	math: {
+	mathwidget: {
 		engine: 'mathjax',
 		lazyLoad: undefined, // async () => { ... }, called once before rendering first equation if engine doesn't exist. After resolving promise, plugin renders equations.
 		outputType: 'script', // or span
