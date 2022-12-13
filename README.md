@@ -1,7 +1,10 @@
 # CKEditor 5 mathwidget
 
 ckeditor5-math is a TeX-based mathematical plugin for CKEditor 5.
-derived form ckeditor5-math and ckeditor5-mermaid plugin
+
+derived form 
+
+[ckeditor5-math](https://github.com/isaul32/ckeditor5-math.git) && [ckeditor5-mermaid](https://github.com/ckeditor/ckeditor5-mermaid.git) plugin
 
 ## Requirements
 
@@ -41,7 +44,7 @@ InlineEditor.defaultConfig = {
 ```js
 InlineEditor.defaultConfig = {
 	// ...
-	math: {
+	mathwidget: {
 		engine: 'mathjax',
 		lazyLoad: undefined, // async () => { ... }, called once before rendering first equation if engine doesn't exist. After resolving promise, plugin renders equations.
 		outputType: 'script', // or span
