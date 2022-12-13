@@ -4,13 +4,7 @@ ckeditor5-math is a TeX-based mathematical plugin for CKEditor 5.
 
 derived form 
 
-ckeditor5-math 
-
-and 
-
-ckeditor5-mermaid 
-
-plugin
+ckeditor5-math && ckeditor5-mermaid plugin
 
 ## Requirements
 
