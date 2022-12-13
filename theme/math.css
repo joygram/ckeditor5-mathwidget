@@ -11,8 +11,7 @@
 	padding: 16px;
 	/* just like pre element */
 	background-color: hsla(0, 0%, 78%, 0.3);
-	/* just like pre element */
-	min-height: 200px;
+	min-height: 100px;
 	border: 0;
 	resize: vertical;
 	font-size: 14px;
@@ -23,7 +22,7 @@
 .ck-mathwidget__preview {
 	padding: 16px;
 	background-color: hsla(43, 85%, 49%, 0.227);
-	min-height: 200px;
+	min-height: 100px;
 	border: 0;
 	resize: vertical;
 	font-size: 14px;

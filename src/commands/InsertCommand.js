@@ -2,7 +2,11 @@ import { Command } from 'ckeditor5/src/core';
 import { g_plugin_name, g_model_name, g_css_name } from '../utils';
 
 
-const MOCK_Math_CODE = 'x=\\frac{-b \\pm \\sqrt{b^2 -4ac}}{2a} \\\\  E = mc^2 ';
+const MOCK_Math_CODE = `
+x=\\frac{-b \\pm \\sqrt{b^2 -4ac}}{2a}
+\\\\
+E = mc^2
+`;
 
 export default class InsertCommand extends Command {
 	/**
